@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withFirebase } from 'react-redux-firebase';
+import { registerUser } from '../../store/actions/authActions';
 import {
   Grid,
   Form,
@@ -11,7 +15,71 @@ import {
 } from 'semantic-ui-react';
 
 class Register extends Component {
+  state = {
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirmation: '',
+    validationErrors: [],
+  };
+
+  handleChangeInput = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  generateErrorMessage = (message, validationErrors) => {
+    const error = {
+      message: message,
+    };
+    return [...validationErrors, error];
+  };
+
+  validateForm = () => {
+    const { username, email, password, passwordConfirmation } = this.state;
+    let validationErrors = [];
+
+    if (!username || !email || !password || !passwordConfirmation) {
+      validationErrors = this.generateErrorMessage(
+        'All form fields should be filled in',
+        validationErrors,
+      );
+    }
+    if (!password || password.length < 6) {
+      validationErrors = this.generateErrorMessage(
+        'Password length should be greater then 6 symbols',
+        validationErrors,
+      );
+    } else if (password !== passwordConfirmation) {
+      validationErrors = this.generateErrorMessage(
+        "Password and password confirmation don't much",
+        validationErrors,
+      );
+    }
+
+    this.setState({ validationErrors });
+    return validationErrors.length > 0 ? false : true;
+  };
+
+  handleSubmitForm = e => {
+    const { firebase } = this.props;
+    e.preventDefault();
+    if (this.validateForm()) {
+      this.props.registerUser(this.state, firebase);
+    }
+  };
+
+  displayErrors = validationErrors => {
+    return validationErrors.map((error, i) => (
+      <p key={i}>
+        {i + 1}. {error.message}
+      </p>
+    ));
+  };
+
   render() {
+    console.log(this.props.firebase);
+    const { validationErrors } = this.state;
+    const { authError } = this.props;
     return (
       <Grid
         textAlign='center'
@@ -19,7 +87,7 @@ class Register extends Component {
         className='registrationForm'
       >
         <Grid.Column color='pink' width={10}>
-          <Form>
+          <Form onSubmit={this.handleSubmitForm}>
             <Header as='h2'>Register</Header>
             <Segment>
               <Form.Input
@@ -28,6 +96,7 @@ class Register extends Component {
                 placeholder='username'
                 icon='user'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
               <Form.Input
                 type='email'
@@ -35,6 +104,7 @@ class Register extends Component {
                 placeholder='email'
                 icon='mail'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
               <Form.Input
                 type='password'
@@ -42,6 +112,7 @@ class Register extends Component {
                 placeholder='password'
                 icon='lock'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
               <Form.Input
                 type='password'
@@ -49,6 +120,7 @@ class Register extends Component {
                 placeholder='confirm password'
                 icon='repeat'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
               <Button animated>
                 <Button.Content visible> Register</Button.Content>
@@ -61,10 +133,36 @@ class Register extends Component {
           <Message>
             Already a user? <Link to='/login'>Login</Link>
           </Message>
+          {validationErrors.length > 0 && (
+            <Message warning>{this.displayErrors(validationErrors)}</Message>
+          )}
+          {authError && (
+            <Message negative>
+              <p>{authError.message}</p>
+            </Message>
+          )}
         </Grid.Column>
       </Grid>
     );
   }
 }
 
-export default Register;
+const mapStateToProps = state => {
+  return {
+    authError: state.authReducer.authError,
+  };
+};
+
+const dispatchStateToProps = dispatch => {
+  return {
+    registerUser: (user, firebase) => dispatch(registerUser(user, firebase)),
+  };
+};
+
+export default compose(
+  connect(
+    mapStateToProps,
+    dispatchStateToProps,
+  ),
+  withFirebase,
+)(Register);

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Grid,
   Form,
@@ -10,8 +9,36 @@ import {
   Icon,
 } from 'semantic-ui-react';
 
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withFirebase } from 'react-redux-firebase';
+import { logIn } from '../../store/actions/authActions';
+
 class Login extends Component {
+  state = {
+    email: '',
+    password: '',
+    validationError: null,
+  };
+
+  handleChangeInput = e => {
+    this.setState({ [e.target.name]: e.target.value, validationError: null });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { firebase } = this.props;
+    if (this.state.email && this.state.password) {
+      this.props.logIn(this.state, firebase);
+    } else {
+      const error = { message: 'All fields should be filled in' };
+      this.setState({ validationError: error });
+    }
+  };
   render() {
+    const { validationError } = this.state;
+    const { authError } = this.props;
+
     return (
       <Grid
         textAlign='center'
@@ -19,7 +46,7 @@ class Login extends Component {
         className='registrationForm'
       >
         <Grid.Column color='pink' width={10}>
-          <Form>
+          <Form onSubmit={this.handleSubmit}>
             <Header as='h2'>Login</Header>
             <Segment>
               <Form.Input
@@ -28,6 +55,7 @@ class Login extends Component {
                 placeholder='email'
                 icon='mail'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
               <Form.Input
                 type='password'
@@ -35,6 +63,7 @@ class Login extends Component {
                 placeholder='password'
                 icon='lock'
                 iconPosition='left'
+                onChange={this.handleChangeInput}
               />
 
               <Button animated>
@@ -45,10 +74,31 @@ class Login extends Component {
               </Button>
             </Segment>
           </Form>
+          {validationError && (
+            <Message warning>{validationError.message}</Message>
+          )}
+          {authError && <Message negative>{authError.message}</Message>}
         </Grid.Column>
       </Grid>
     );
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+    authError: state.authReducer.authError,
+  };
+};
+
+const dispatchStateToProps = dispatch => {
+  return {
+    logIn: (user, firebase) => dispatch(logIn(user, firebase)),
+  };
+};
+export default compose(
+  withFirebase,
+  connect(
+    mapStateToProps,
+    dispatchStateToProps,
+  ),
+)(Login);
