@@ -60,7 +60,6 @@ class AddEvent extends Component {
       );
     }
 
-    console.log(typeof +seatsNumber);
     if (typeof +seatsNumber !== 'number' || seatsNumber < 0) {
       validationErrors = this.generateErrorMessage(
         'Seats number should be a number greater then 0',

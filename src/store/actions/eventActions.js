@@ -64,3 +64,36 @@ export const bookEvent = (event, user, firebase) => {
       });
   };
 };
+
+export const cancelEvent = data => {
+  return dispatch => {
+    const { event, user, firebase } = data;
+    const { firestore } = firebase;
+    const visitedEvents = user.visitedEvents.filter(ev => ev !== event.id);
+    const registeredUsers = event.registeredUsers.filter(us => us !== user.id);
+
+    firestore()
+      .collection('users')
+      .doc(user.id)
+      .update({
+        ...user,
+        visitedEvents,
+      })
+      .then(() => {
+        firestore()
+          .collection('events')
+          .doc(event.id)
+          .update({
+            ...event,
+            seatsNumber: event.seatsNumber + 1,
+            registeredUsers,
+          });
+      })
+      .then(() => {
+        dispatch({ type: 'CANCEL_EVENT_SUCCES' });
+      })
+      .catch(err => {
+        dispatch({ type: 'CANCEL_EVENT_ERROR', err });
+      });
+  };
+};

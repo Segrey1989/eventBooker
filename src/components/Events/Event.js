@@ -1,5 +1,12 @@
 import React from 'react';
-import { Grid, Container, Image, Header, Segment } from 'semantic-ui-react';
+import {
+  Grid,
+  Container,
+  Image,
+  Header,
+  Segment,
+  Button,
+} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { bookEvent } from '../../store/actions/eventActions';
@@ -8,6 +15,7 @@ import BookEventModal from '../Modal/BookEventModal';
 
 const Event = props => {
   const { event } = props;
+  const trigger = <Button fluid> See Details</Button>;
   return (
     <Grid.Column>
       <Container style={{ marginBottom: '30px' }}>
@@ -24,7 +32,7 @@ const Event = props => {
               </Grid.Column>
             </Grid.Row>
           </Grid>
-          <BookEventModal data={props} />
+          <BookEventModal data={props} trigger={trigger} />
         </Segment>
       </Container>
     </Grid.Column>

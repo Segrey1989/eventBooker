@@ -32,6 +32,20 @@ const eventReducer = (state = initState, action) => {
         eventError: action.err.message,
       };
 
+    case 'CANCEL_EVENT_SUCCES':
+      console.log('CANCEL_EVENT_SUCCES');
+      return {
+        ...state,
+        eventError: null,
+      };
+
+    case 'CANCEL_EVENT_ERROR':
+      console.log('CANCELL_EVENT_ERROR');
+      return {
+        ...state,
+        eventError: action.err.message,
+      };
+
     default:
       return state;
   }
