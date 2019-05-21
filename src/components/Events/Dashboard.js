@@ -7,13 +7,18 @@ import { Grid, Container, Header } from 'semantic-ui-react';
 
 class Dashboard extends Component {
   render() {
+    const currentDate = new Date();
+    const { events } = this.props;
+    const upcomingEvents = events
+      ? events.filter(ev => new Date(ev.eventDate) >= currentDate)
+      : null;
     return (
       <Container>
         <Header as='h2' textAlign='center'>
           Upcoming Events
         </Header>
         <Grid>
-          <EventList events={this.props.events} user={this.props.user} />
+          <EventList events={upcomingEvents} user={this.props.user} />
         </Grid>
       </Container>
     );
