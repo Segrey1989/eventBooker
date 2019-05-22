@@ -13,6 +13,7 @@ import {
   Message,
   Icon,
 } from 'semantic-ui-react';
+import { Redirect } from 'react-router-dom';
 
 class Register extends Component {
   state = {
@@ -65,6 +66,7 @@ class Register extends Component {
     e.preventDefault();
     if (this.validateForm()) {
       this.props.registerUser(this.state, firebase);
+      this.props.history.push('/');
     }
   };
 
@@ -77,9 +79,9 @@ class Register extends Component {
   };
 
   render() {
-    console.log(this.props.firebase);
     const { validationErrors } = this.state;
-    const { authError } = this.props;
+    const { authError, auth } = this.props;
+    if (!auth.isEmpty) return <Redirect to='/' />;
     return (
       <Grid
         textAlign='center'
@@ -150,6 +152,7 @@ class Register extends Component {
 const mapStateToProps = state => {
   return {
     authError: state.authReducer.authError,
+    auth: state.firebase.auth,
   };
 };
 

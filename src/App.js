@@ -7,7 +7,6 @@ import Login from './components/Auth/Login';
 import Dashboard from './components/Events/Dashboard';
 import NavBar from './components/navigation/NavBar';
 import AddEvent from './components/Events/AddEvent';
-import BookEventModal from './components/Events/bookEventModal';
 import { connect } from 'react-redux';
 
 class App extends React.Component {
@@ -22,7 +21,6 @@ class App extends React.Component {
             <Route path='/register' component={Register} />
             <Route path='/login' component={Login} />
             <Route path='/addEvent' component={AddEvent} />
-            <Route path='/bookEvent' component={BookEventModal} />
           </Switch>
         </BrowserRouter>
       );

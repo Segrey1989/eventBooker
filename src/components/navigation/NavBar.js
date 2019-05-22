@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { signOut } from '../../store/actions/authActions';
 import { withFirebase } from 'react-redux-firebase';
 import { compose } from 'redux';
+import DisplayMyEventsModal from '../Modal/DisplayMyEventsModal';
 
 class NavBar extends Component {
   state = {
@@ -65,14 +66,15 @@ class NavBar extends Component {
                 active={activeItem === 'home'}
                 onClick={this.handleItemClick}
               />
-              <Menu.Item
+              <DisplayMyEventsModal />
+              {/* <Menu.Item
                 as={Link}
                 to='/myevents'
                 name='myEvents'
                 content='My Events'
                 active={activeItem === 'myEvents'}
                 onClick={this.handleItemClick}
-              />
+              /> */}
               <Menu.Item
                 as={Link}
                 to='/user'

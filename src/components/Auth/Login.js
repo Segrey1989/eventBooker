@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withFirebase } from 'react-redux-firebase';
 import { logIn } from '../../store/actions/authActions';
+import { Redirect } from 'react-router-dom';
 
 class Login extends Component {
   state = {
@@ -30,6 +31,7 @@ class Login extends Component {
     const { firebase } = this.props;
     if (this.state.email && this.state.password) {
       this.props.logIn(this.state, firebase);
+      this.props.history.push('/');
     } else {
       const error = { message: 'All fields should be filled in' };
       this.setState({ validationError: error });
@@ -37,8 +39,8 @@ class Login extends Component {
   };
   render() {
     const { validationError } = this.state;
-    const { authError } = this.props;
-
+    const { authError, auth } = this.props;
+    if (!auth.isEmpty) return <Redirect to='/' />;
     return (
       <Grid
         textAlign='center'
@@ -85,8 +87,10 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
+  console.log(state);
   return {
     authError: state.authReducer.authError,
+    auth: state.firebase.auth,
   };
 };
 
