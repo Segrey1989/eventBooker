@@ -9,7 +9,7 @@ import DisplayMyEventsModal from '../Modal/DisplayMyEventsModal';
 
 class NavBar extends Component {
   state = {
-    activeItem: 'addEvent',
+    activeItem: 'home',
   };
 
   handleItemClick = (e, { name }) => {
@@ -21,20 +21,32 @@ class NavBar extends Component {
 
   render() {
     const { activeItem } = this.state;
-    const { auth } = this.props;
+    const { auth, isAdmin } = this.props;
+
     return (
       <Segment inverted color='pink'>
         <Menu inverted secondary>
-          <Menu.Menu position='left'>
-            <Menu.Item
-              as={Link}
-              to='/addEvent'
-              name='addEvent'
-              content='Add Event'
-              active={activeItem === 'addEvent'}
-              onClick={this.handleItemClick}
-            />
-          </Menu.Menu>
+          {isAdmin && (
+            <Menu.Menu position='left'>
+              <Menu.Item
+                as={Link}
+                to='/addEvent'
+                name='addEvent'
+                content='Add Event'
+                active={activeItem === 'addEvent'}
+                onClick={this.handleItemClick}
+              />
+              <Menu.Item
+                as={Link}
+                to='/settings'
+                name='settings'
+                content=''
+                icon='settings'
+                active={activeItem === 'settings'}
+                onClick={this.handleItemClick}
+              />
+            </Menu.Menu>
+          )}
           {auth.isEmpty && (
             <Menu.Menu position='right'>
               <Menu.Item
@@ -67,14 +79,7 @@ class NavBar extends Component {
                 onClick={this.handleItemClick}
               />
               <DisplayMyEventsModal />
-              {/* <Menu.Item
-                as={Link}
-                to='/myevents'
-                name='myEvents'
-                content='My Events'
-                active={activeItem === 'myEvents'}
-                onClick={this.handleItemClick}
-              /> */}
+
               <Menu.Item
                 as={Link}
                 to='/user'
@@ -100,6 +105,7 @@ class NavBar extends Component {
 const mapStateToProps = state => {
   return {
     auth: state.firebase.auth,
+    isAdmin: state.authReducer.isAdmin,
   };
 };
 

@@ -28,7 +28,8 @@ export const logIn = (user, firebase) => {
     firebase
       .auth()
       .signInWithEmailAndPassword(user.email, user.password)
-      .then(() => {
+
+      .then(result => {
         dispatch({ type: 'LOGIN_SUCCES' });
       })
       .catch(err => {
@@ -48,5 +49,23 @@ export const signOut = firebase => {
       .catch(err => {
         dispatch({ type: 'SIGNOUT_ERROR', err });
       });
+  };
+};
+
+export const getCustomClaims = firebase => {
+  return dispatch => {
+    const auth = firebase.auth();
+    const { currentUser } = auth;
+
+    if (currentUser) {
+      currentUser
+        .getIdTokenResult()
+        .then(token => {
+          dispatch({ type: 'GET_CUSTOM_CLAIMS_SUCCESS', token });
+        })
+        .catch(err => {
+          dispatch({ type: 'GET_CUSTOM_CLAIMS_ERROR', err });
+        });
+    }
   };
 };

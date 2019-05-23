@@ -7,10 +7,10 @@ const BookEventModal = props => {
   const checkMultipleBooking = visitedEvents
     ? visitedEvents.find(ev => ev === event.id)
     : null;
-  // console.log(event.id);
+
   return (
     <Modal trigger={props.trigger}>
-      (<Modal.Header>Book {event.eventName}</Modal.Header>)
+      <Modal.Header>Book {event.eventName}</Modal.Header>
       <Modal.Content image>
         <Image wrapped size='medium' src={event.eventImage} />
         <Modal.Description>

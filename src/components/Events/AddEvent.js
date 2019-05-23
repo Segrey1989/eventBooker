@@ -106,6 +106,9 @@ class AddEvent extends Component {
       eventDescription,
       validationErrors,
     } = this.state;
+    if (!this.props.isAdmin) {
+      this.props.history.push('/');
+    }
     return (
       <Grid
         textAlign='center'
@@ -166,6 +169,12 @@ class AddEvent extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    isAdmin: state.authReducer.isAdmin,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     addEvent: (eventData, firebase) => dispatch(addEvent(eventData, firebase)),
@@ -174,7 +183,7 @@ const mapDispatchToProps = dispatch => {
 export default compose(
   withFirebase,
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
   ),
 )(AddEvent);

@@ -21,7 +21,7 @@ const Event = props => {
     <Grid.Column>
       <Container style={{ marginBottom: '30px' }}>
         <Image src={event.eventImage} fluid style={{ maxHeight: '350px' }} />
-        <Segment textAlign='center' id='eventBookTrigger'>
+        <Segment textAlign='center'>
           <Header as='h3'>{event.eventName}</Header>
           <Grid>
             <Grid.Row columns={2}>

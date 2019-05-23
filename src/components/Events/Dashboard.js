@@ -12,6 +12,7 @@ class Dashboard extends Component {
     const upcomingEvents = events
       ? events.filter(ev => new Date(ev.eventDate) >= currentDate)
       : null;
+
     return (
       <Container>
         <Header as='h2' textAlign='center'>

@@ -31,7 +31,6 @@ class Login extends Component {
     const { firebase } = this.props;
     if (this.state.email && this.state.password) {
       this.props.logIn(this.state, firebase);
-      this.props.history.push('/');
     } else {
       const error = { message: 'All fields should be filled in' };
       this.setState({ validationError: error });

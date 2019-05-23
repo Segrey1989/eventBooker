@@ -1,5 +1,6 @@
 const initialState = {
   authError: null,
+  isAdmin: false,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -34,11 +35,26 @@ const authReducer = (state = initialState, action) => {
     case 'SIGNOUT':
       return {
         ...state,
+        isAdmin: false,
       };
 
     case 'SIGNOUT_ERROR':
       return {
         ...state,
+      };
+
+    case 'GET_CUSTOM_CLAIMS_SUCCESS':
+      console.log('GET_CUSTOM_CLAIMS_SUCCESS');
+      return {
+        ...state,
+        isAdmin: action.token.claims.admin,
+      };
+
+    case 'GET_CUSTOM_CLAIMS_ERROR':
+      console.log('GET_CUSTOM_CLAIMS_ERROR', action.err.message);
+      return {
+        ...state,
+        isAdmin: false,
       };
 
     default:
