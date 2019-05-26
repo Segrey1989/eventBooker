@@ -60,7 +60,7 @@ class AddEvent extends Component {
       );
     }
 
-    if (typeof +seatsNumber !== 'number' || seatsNumber < 0) {
+    if (isNaN(parseInt(seatsNumber, 10)) || seatsNumber < 0) {
       validationErrors = this.generateErrorMessage(
         'Seats number should be a number greater then 0',
         validationErrors,
@@ -95,6 +95,7 @@ class AddEvent extends Component {
     const { firebase } = this.props;
     if (this.validateForm()) {
       this.props.addEvent(this.state, firebase);
+      this.props.history.push('/');
     }
   };
 
